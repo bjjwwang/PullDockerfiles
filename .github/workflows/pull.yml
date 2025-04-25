@@ -1,0 +1,24 @@
+name: Save Docker Image
+
+on:
+  workflow_dispatch:  # 手动触发
+
+jobs:
+  save-docker-image:
+    runs-on: ubuntu-22.04  # 使用 x86 架构的 Ubuntu 22.04
+
+    steps:
+    - name: Checkout (not really needed but standard)
+      uses: actions/checkout@v3
+
+    - name: Pull Docker image
+      run: docker pull svftools/teaching-software-verification:latest
+
+    - name: Save Docker image as tar
+      run: docker save svftools/teaching-software-verification:latest -o svf-image.tar
+
+    - name: Upload Docker image tar as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: svf-docker-image
+        path: svf-image.tar
