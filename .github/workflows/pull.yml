@@ -4,24 +4,31 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  save-docker-image:
+  save:
     runs-on: ubuntu-22.04
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: Pull Docker image
-      run: docker pull svftools/teaching-software-verification:latest
+      - name: Pull Docker image
+        run: docker pull svftools/teaching-software-verification:latest
 
-    - name: Save Docker image as tar
-      run: docker save svftools/teaching-software-verification:latest -o svf-image.tar
+      - name: Save Docker image to tarball
+        run: docker save svftools/teaching-software-verification:latest -o svf-image.tar
 
-    - name: Upload to release
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        tag_name="docker-image-$(date +%Y%m%d%H%M%S)"
-        gh release create "$tag_name" svf-image.tar -t "$tag_name" -n "Auto upload docker image tar"
+      - name: Debug Tar File
+        run: |
+          echo "Checking output:"
+          ls -lh svf-image.tar
+
+      - name: Upload Docker image tarball
+        uses: actions/upload-artifact@v4
+        with:
+          name: svf-image-tar
+          path: svf-image.tar
