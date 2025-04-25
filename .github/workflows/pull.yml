@@ -20,7 +20,7 @@ jobs:
       run: docker save svftools/teaching-software-verification:latest -o svf-image.tar
 
     - name: Upload Docker image tar as artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v3.1.3
       with:
         name: svf-docker-image
         path: svf-image.tar
